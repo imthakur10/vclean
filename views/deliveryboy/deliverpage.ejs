@@ -1,0 +1,75 @@
+<!-- views/login.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>VClean</title>
+    <link href="/img/logotitle.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <style>
+        body        { padding-top:80px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<div class="col-sm-6 col-sm-offset-3">
+
+    <div>          
+        <table class="table">    
+            <tr>
+                <td><strong>DeliveryBoy Name</strong></td><td><%= order.deliveryBoy.name %></td>
+            </tr>
+            <tr>
+                <td><strong>DeliveryBoy Tag</strong></td><td><%= order.deliveryBoy.username %></td>
+            </tr>
+            <tr>
+                <td><strong>Customer Name</strong></td><td><%= order.customer.name %></td>
+            </tr>
+            <tr>
+                <td><strong>Customer Tag</strong></td><td><%= order.customer.tagNumber %></td>
+            </tr>
+            <tr>
+                <td><strong>Customer Address</strong></td><td><%= order.customer.address %></td>
+            </tr>
+            <tr>
+                <td><strong>Customer Number</strong></td><td> <a href="tel:<%= order.customer.mainNumber %>"><%= order.customer.mainNumber %></a></td>
+            </tr>
+            <tr>
+                <td><strong>Order Cost</strong></td><td><%= order.cost%></td>
+            </tr>
+            <tr>
+                <td><strong>Order Description</strong></td><td><%= order.description %></td>
+            </tr>
+        </table>
+    </div>
+
+    <a href="/deliveryboy/<%= order.deliveryBoy._id %>/deliver/<%= order._id %>/resend">Resend OTP</a>
+
+    <% if (message.length > 0) { %>
+        <% if (message == 'OTP resend') { %>
+            <div class="alert alert-success"><%= message %></div>
+        <% } else { %>
+            <div class="alert alert-danger"><%= message %></div>
+    <% }} %>
+
+    <form action="/deliveryboy/<%= order.deliveryBoy._id %>/deliver/<%= order._id %>" method="post">
+
+        <div class="form-group">
+            <label>Enter OTP</label>
+            <input type="number" class="form-control" name="otp">
+        </div>
+        <div class="form-group">
+            <label>DeliveryBoy Password</label>
+            <input type="password" class="form-control" name="dPass">
+        </div>
+
+        <button type="submit" class="btn btn-warning btn-lg">Pay</button>
+    </form>
+
+
+</div>
+
+</div>
+</body>
+</html>

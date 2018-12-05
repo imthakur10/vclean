@@ -1,0 +1,177 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>VClean</title>
+    <link href="/img/logotitle.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+
+  <link href="/css/style.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <style>
+        body        { padding:10px; word-wrap:break-word; }
+    </style>
+    <script>
+    function copyToClipboard() {
+      var copyText = document.getElementById("invite-link");
+      copyText.select();
+      document.execCommand("copy");
+      $(".invite-button").removeClass("btn-default");
+      $(".invite-button").addClass("btn-info");
+    }
+    </script>
+</head>
+<body>
+ <nav class="navbar navbar-default">
+  <div class="container-fluid">
+
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        <a class="navbar-brand page-scroll sticky-logo" href="/">
+            <img src="img/logo.png" width="40" height="40" alt="" title="VClean" style="border-radius: 50%;"> 
+            <h1 style="top:-40px"><span>V<span style="color: #555;">Clean</span></span></h1>
+        </a>
+    </div>
+    <div class="collapse navbar-collapse main-menu bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/profile"><span class="glyphicon glyphicon-user" style="color:black;"></span> <span style="color:black;">Signed in as 
+                            <% if(user.local.email) { %>
+                              <%= user.local.email %>
+                            <% } else if(user.google.email) { %>
+                              <%= user.google.email %>
+                            <% } else { %>
+                              <%= user.facebook.email %>
+                            <% } %>
+                        </span></a></li>
+                          <li ><a href="/logout"><span class="glyphicon glyphicon-log-out" style="color:black;" ></span> <span style="color:black;">Logout</span></a></li>
+                  </ul>
+    </div>
+
+
+  </div>
+</nav>
+<div class="container">
+
+
+    <div class="row">
+          <center>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="pri_table_list">
+                  <h3>Personal<br> <span>Details</span></h3>
+                  <ol text-align:center>
+                    <li>Name : <%= customer.name %></li>
+                    <li>Address :  <%= customer.address %></li>
+                    <li>Contact No.: <%= customer.mainNumber %></li>
+                    <li>Customer Tag : <%= customer.tagNumber %></li>
+                  </ol>
+                <form method="get" action="/update">
+                     <button type="submit">Edit Details</button>
+                </form>
+                </div>
+              </div>  
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="pri_table_list">
+                  <h3>Remaining<br/> <span>Plan Details</span></h3>
+                  <ol text-align:center>
+                    <li>Long Clothes : <%= customer.longClothes %></li>
+                    <li>Short Clothes : <%= customer.shortClothes %></li>
+                    <li>Validity : <%= customer.daysLeft %></li>
+                    <li>OTP : <%= customer.pickUpKey %></li>
+                  </ol>
+                <form method="get" action="/pincode">
+                     <button type="submit" 
+                        <% if(customer.isBusy){ %>
+                            disabled >Status : <%= customer.history[(customer.history.length)-1].status %>
+                        <% } else { %>
+                            >Order Pickup Now
+                        <% } %>
+                      </button>
+                </form>
+                </div>
+              </div> 
+          </center>
+    </div>
+    <br>
+<div><br>
+    <center><label>INVITE LINK</label>
+    <input readonly="" style="border:none;box-shadow: none;" type="text" class="form-control" id="invite-link" value="https://www.vclean.com/signup/<%= customer._id %>">
+    <button onclick="copyToClipboard()" class="btn btn-primary invite-button">Copy Link</button></center>
+</div>
+<div><br>
+    <center><label>SHARE VIA : &nbsp; &nbsp</label>
+    <a href="whatsapp://send?text=SignUp with this link https://www.vclean.com/signup/<%= customer._id %> and get 10% off on your first order. I'll get 10% off too, on my next order." data-action="share/whatsapp/share"><i class="fa fa-whatsapp" style="font-size:36px;color:green"></i></a>
+    <a href=”fb-messenger://share/?link= https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fsharing%2Freference%2Fsend-dialog&app_id=123456789”><i class="fa fa-facebook" style="font-size:30px;color:blue"></i></a></center>
+</div>
+
+
+    <!-- Nav tabs -->
+    <br><br>
+        <center>
+        <ul class="nav nav-tabs">
+            <li class="active col-lg-6 col-md-6 col-sm-6"><a style="color:red" data-toggle="tab" href="#rechargehistory"><h3>Recharges</h3></a></li>
+            <li class="col-lg-6 col-md-6 col-sm-6"><a style="color:blue" data-toggle="tab" href="#orderhistory"><h3>Orders</h3></a></li>
+        </ul>
+        </center>
+
+    <div class="tab-content">
+
+
+        <div id="rechargehistory" class="tab-pane fade in active">
+
+            <div class="row">
+                <h2>Recharge History</h2>
+
+                <% customer.currentRecharges.forEach(function(recharge){  %>
+          
+                    <div class="col-lg-4 col-md-6 col-sm-12 well">
+                        <span><strong>Recharge Date : </strong><%= recharge.rechargeDate %></span>
+                        <span><strong>Amount : </strong><%= recharge.amount %></span>
+                    </div> 
+
+                <% }) %>
+                     
+            </div>
+
+        </div>
+
+        <div id="orderhistory" class="tab-pane fade">
+
+            <div class="row">
+                <h2>Order History</h2>
+
+                <% customer.history.forEach(function(order){  %>
+          
+                    <div class="col-lg-4 col-md-6 col-sm-12 well">
+                        <p><strong>OrderID : </strong><%= order._id %></p>
+                        <p><strong>Description : </strong><%= order.description %></p>
+                        <span><strong>Cost : </strong><%= order.cost %></span>
+                        <span><strong>Status : </strong><%= order.status %>
+                            <% if (order.status == 'booked') { %>
+                              <a href="/order/<%= order._id %>/cancel" class="btn btn-default btn-sm">Cancel Pickup</a>
+                            <% } %>
+                        </span>
+                        <p><strong>Order Date : </strong><%= order.orderDate %></p>
+                        <% if (order.status == 'delivered') { %>
+                          <span><strong>Delivered Date : </strong><%= order.deliveryDate %></span>
+                        <% } %>
+                    </div> 
+
+                <% }) %>
+                     
+            </div>
+        
+        </div>
+    </div>
+</div>
+</body>
+</html>

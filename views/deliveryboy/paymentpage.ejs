@@ -1,0 +1,69 @@
+<!-- views/login.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>VClean</title>
+    <link href="/img/logotitle.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <style>
+        body        { padding-top:80px; }
+    </style>
+
+</head>
+<body>
+<div class="container">
+<h1 style="color: solid grey"><center>Payment Page</center></h1><br>
+<div class="col-sm-6 col-sm-offset-3">
+<div class="table-responsive">          
+  <table class="table">    
+    <tr>
+        <td>Long Clothes Left : </td><td><%= order.customer.longClothes %></td>
+    </tr>
+    <tr>
+        <td>Short Clothes Left : </td><td><%= order.customer.shortClothes %></td>
+    </tr>
+    <tr>
+        <td>Long Clothes Given : </td><td><%= order.customer.longGiven %></td>
+    </tr>
+    <tr>
+        <td>Short Clothes Given : </td><td><%= order.customer.shortGiven %></td>
+    </tr>
+    <tr>
+        <td>Cost With Plan : </td>
+        <td>
+            <% if (order.customer.daysLeft) { %>
+                <%= costWithPlan %>
+            <% } %>
+            <a href="/deliveryboy/<%= order.deliveryBoy._id %>/recharge" target="_blank" class="btn btn-default btn-sm">Recharge</a>
+        </td>
+    </tr>
+    <tr>
+        <td>Cost Without Plan : </td><td><%= costWithoutPlan %></td>
+    </tr>
+</table>
+
+    <% if (message.length > 0) { %>
+    <div class="alert alert-danger"><%= message %></div>
+    <% } %>
+
+    <form action="/deliveryboy/<%= order.deliveryBoy._id %>/payment/<%= order._id %>" method="post">
+
+        <div class="checkbox">
+            <label>Pay With Plan</label>
+            <input id="paymentCheck" type="checkbox" name="payWithPlan" value="true" <% if(!order.customer.daysLeft) { %>disabled<% } else { %> checked="true" <% } %> >
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" name="dPass">
+        </div>
+
+        <button type="submit" class="btn btn-warning btn-lg">Pay</button>
+    </form>
+
+</div>
+</div>
+
+</div>
+</body>
+</html>

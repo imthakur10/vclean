@@ -1,0 +1,73 @@
+<!-- views/login.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>VClean</title>
+    <link href="/img/logotitle.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <style>
+        body        { padding-top:80px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1 style="color: solid grey"><center>Recharge</center></h1><br>
+<div class="col-sm-6 col-sm-offset-3">
+
+    <div class="table-responsive">          
+        <table class="table">    
+            <tr>
+                <td>DeliveryBoy Name : </td><td><%= deliveryboy.name %></td>
+            </tr>
+            <tr>
+                <td>DeliveryBoy Tag : </td><td><%= deliveryboy.username %></td>
+            </tr>
+            <tr>
+                <td>Customer Name : </td><td><%= customer.name %></td>
+            </tr>
+            <tr>
+                <td>Customer Tag : </td><td><%= customer.tagNumber %></td>
+            </tr>
+            <tr>
+                <td>Customer Address : </td><td><%= customer.address %></td>
+            </tr>
+        </table>
+    </div>
+
+    <% if (message.length > 0) { %>
+        <% if (message == "Recharge Done") { %>
+            <div class="alert alert-success"><%= message %></div>
+        <% } else { %>
+            <div class="alert alert-danger"><%= message %></div>
+        <% } %>
+    <% } %>
+
+    <!-- LOGIN FORM -->
+    <form action="/deliveryboy/<%= deliveryboy._id %>/recharge/<%= customer._id %>" method="post">
+        <div class="form-group">
+            <label>Select a Plan</label>
+            <select class="form-control" name="getPlan">
+
+                <% plans.forEach(function(plan){ %>
+                    <option>
+                        <%= plan.amount %>
+                    </option>
+                <% }) %>
+            
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" name="dPass">
+        </div>
+
+        <button type="submit" class="btn btn-warning btn-lg">Recharge</button>
+    </form>
+
+</div>
+
+</div>
+</body>
+</html>

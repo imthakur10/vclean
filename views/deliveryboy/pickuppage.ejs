@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VClean</title>
+    <link href="/img/logotitle.ico" rel="shortcut icon">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript"> 
+        function incQuantity(item) {
+            var itemType = item.getAttribute("data-type");
+            var quantity = parseInt($('#' + itemType).val());
+            $('#' + itemType).val(quantity + 1);
+            $('.' + itemType).addClass("addtoselect");
+            var itemPrice = Number(item.getAttribute("data-field"));
+            var currentCost = parseInt($('#estimatedCost').val());
+            $('#estimatedCost').val(currentCost + itemPrice);
+        }
+        function decQuantity(item) {
+            var itemType = item.getAttribute("data-type");
+            var quantity = parseInt($('#' + itemType).val());
+            if(quantity > 0)
+            {
+                $('#' + itemType).val(quantity - 1);
+                var itemPrice = Number(item.getAttribute("data-field"));
+                var currentCost = parseInt($('#estimatedCost').val());
+                $('#estimatedCost').val(currentCost - itemPrice);
+                if(quantity == 0){
+                    $('.' + itemType).removeClass("addtoselect");
+                }
+            }
+        }
+        $(document).ready(function(){
+            $("#buttonlock").click(function(){
+
+                $(".quantity-left-minus").addClass("hidden");
+                $(".quantity-right-plus").addClass("hidden");
+                $(".deliveryBoyPass").addClass("hidden");
+                $(".okey").removeClass("hidden");
+                $(".addtoall").addClass("hidden");
+                $(".addtoselect").removeClass("hidden");
+                $('.mainButton').prop("disabled", false);
+            });
+            $("#buttonunlock").click(function(){
+
+                $(".quantity-left-minus").removeClass("hidden");
+                $(".quantity-right-plus").removeClass("hidden");
+                $(".deliveryBoyPass").removeClass("hidden");
+                $(".okey").addClass("hidden");
+                $('.inputpass').val("");
+                $(".addtoselect").addClass("hidden");
+                $(".addtoall").removeClass("hidden");
+                $('.mainButton').prop("disabled", true);
+            });
+        });
+    </script>
+</head>
+<body>
+
+<div class="container">
+
+    <form action="/deliveryboy/<%= order.deliveryBoy._id %>/pickup/<%= order._id %>" method="post">
+    
+    <div>
+        <table>
+            <th>
+                <h3>Pickup Page</h3>
+            </th>
+            <tr>
+                <td><strong>Customer</strong></td>
+                <td><%= order.customer.name %></td>
+            </tr>
+            <tr>
+                <td><strong>Address</strong></td>
+                <td><%= order.customer.address %></td>
+            </tr>
+            <tr>
+                <td><strong>Pickup Guy Name</strong></td>
+                <td><%= order.deliveryBoy.name %></td>
+            </tr>
+            <tr>
+                <td><strong>Pickup Guy Tag</strong></td>
+                <td><%= order.deliveryBoy.username %></td>
+            </tr> 
+            <tr>
+                <td><a href="/deliveryboy/<%=order.deliveryBoy._id%>/pickup/<%=order._id%>" class="btn btn-primary btn-sm active">Wash and Iron</a></td>
+                <td><a href="/deliveryboy/<%=order.deliveryBoy._id%>/pickup/<%=order._id%>/onlyiron" class="btn btn-default btn-sm">Only Iron</a></td>
+            </tr>
+            <tr>
+                <td><a href="/deliveryboy/<%=order.deliveryBoy._id%>" class="btn btn-default btn-sm">Back</a></td>
+            </tr>
+        </table>
+    </div>
+    <br><br><br><br>
+
+    <center>
+        <ul class="nav nav-tabs">
+            <li class="active col-lg-4 col-md-4 col-sm-4"><a data-toggle="tab" href="#SmallClothes">Small</a></li>
+            <li class="col-lg-4 col-md-4 col-sm-4"><a data-toggle="tab" href="#BigClothes">Big</a></li>
+            <li class="col-lg-4 col-md-4 col-sm-4"><a data-toggle="tab" href="#SuperBigClothes">SuperBig</a></li>
+        </ul>
+    </center>
+
+    <div class="tab-content">
+
+        <div id="SmallClothes" class="tab-pane fade in active">
+
+            <div class="row">
+
+                <h5><br></h5>
+                <center><h3>Small Clothes</h3></center>
+
+                <% clothes.forEach(function(clothe){ if(clothe.category === 'small') { %>
+          
+                    <div class="col-lg-2 col-md-4 col-sm-6 addtoall <%= clothe.name %>">
+                        <span><%= clothe.name %> Rs. <%= clothe.price %></span>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button type="button" class="quantity-left-minus btn btn-primary btn-number"  data-type="<%= clothe.name %>" data-field="<%= clothe.price %>" onclick="decQuantity(this)">
+                                      <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </span>
+                                <input type="number" id="<%= clothe.name %>" name="<%= clothe.name %>" class="form-control input-number" value="0" min="0" max="30" readonly>
+                                <span class="input-group-btn">
+                                    <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="<%= clothe.name %>" data-field="<%= clothe.price %>" onclick="incQuantity(this)">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                            </div>
+                    </div> 
+
+                <% }}) %>
+
+            </div>
+        </div>
+        <div id="BigClothes" class="tab-pane fade">
+
+            <div class="row">
+
+                <h5><br></h5>
+                <center><h3>Big Clothes</h3></center>
+
+                <% clothes.forEach(function(clothe){ if(clothe.category === 'big') { %>
+          
+                    <div class="col-lg-2 col-md-4 col-sm-6 addtoall <%= clothe.name %>">
+                        <span><%= clothe.name %> Rs. <%= clothe.price %></span>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button type="button" class="quantity-left-minus btn btn-primary btn-number"  data-type="<%= clothe.name %>" data-field="<%= clothe.price %>" onclick="decQuantity(this)">
+                                      <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </span>
+                                <input type="number" id="<%= clothe.name %>" name="<%= clothe.name %>" class="form-control input-number" value="0" min="0" max="30" readonly>
+                                <span class="input-group-btn">
+                                    <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="<%= clothe.name %>" data-field="<%= clothe.price %>" onclick="incQuantity(this)">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                            </div>
+                    </div> 
+
+                <% }}) %>
+
+            </div>
+             
+        </div>
+
+        <div id="SuperBigClothes" class="tab-pane fade">
+
+            <div class="row">
+
+                <center><h5><br></h5></center>
+                <center><h3>Super Big Clothes</h3></center>
+
+                <% clothes.forEach(function(clothe){ if(clothe.category === 'superbig') { %>
+          
+                    <div class="col-lg-2 col-md-4 col-sm-6 addtoall <%= clothe.name %>">
+                        <span><%= clothe.name %> Rs. <%= clothe.price %></span>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button type="button" class="quantity-left-minus btn btn-primary btn-number"  data-type="<%= clothe.name %>" data-field="<%= clothe.price %>" onclick="decQuantity(this)">
+                                      <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </span>
+                                <input type="number" id="<%= clothe.name %>" name="<%= clothe.name %>" class="form-control input-number" value="0" min="0" max="30" readonly>
+                                <span class="input-group-btn">
+                                    <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="<%= clothe.name %>" data-field="<%= clothe.price %>" onclick="incQuantity(this)">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                            </div>
+                    </div> 
+
+                <% }}) %>
+
+            </div>
+             
+        </div>
+
+    </div>
+
+   <br><br><br>
+
+   <div class="col-sm-4 col-sm-offset-4">
+        <center><h6>*Service Charges are extra as applicable.</h6></center>
+        <div class="form-group">
+            <label>Estimated Cost: </label>
+            <input type="number" id="estimatedCost" class="form-control input-number" value="0" readonly>
+        </div>
+
+        <% if (message.length > 0) { %>
+        <div class="alert alert-danger"><%= message %></div>
+        <% } %>
+        
+        <div class="form-group deliveryBoyPass">
+            <label>Bag Number</label>
+            <input type="number" class="form-control" name="bagNumber">
+        </div>
+        <div class="form-group deliveryBoyPass">
+            <label>Message</label>
+            <textarea class="form-control" name="customMessage">Message : </textarea>
+        </div>
+        <div class="form-group deliveryBoyPass">
+            <label>Delivery Boy Password</label>
+            <input type="password" class="form-control inputpass" name="password">
+        </div>
+        <button id="buttonlock" type="button" class="btn btn-danger btn-lg deliveryBoyPass">Lock Items</button>
+
+        <div class="form-group okey hidden">
+            <label>order key</label>
+            <input type="text" class="form-control" name="customerKey">
+        </div>
+        <button id="buttonunlock" type="button" class="btn btn-danger btn-lg okey hidden">Unlock</button>
+        <button type="submit" class="btn btn-success btn-lg okey hidden mainButton" disabled="true">place order</button>
+    </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

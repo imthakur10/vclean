@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <title>VClean</title>
+        <link href="/img/logotitle.ico" rel="shortcut icon">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+        <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
+    </head>
+    <body>
+
+        <div class="col-sm-6 col-sm-offset-3 jumbotron text-center">
+            <p>user id : <%= customer.user %></p>
+            <p>customer id : <%= customer._id %></p>
+            <p>refered by : <%= customer.referedBy %></p>
+            <p>Name : <%= customer.name %></p>
+            <p>Customer Tag : <%= customer.tagNumber %></p>
+            <p>Address : <%= customer.address %></p>
+            <p>Pincode : <%= customer.pinCode %></p>
+            <p>Contact Numbers : 
+                <% customer.numbers.forEach(function(cell){ %>
+                         <%= cell.number %>. 
+                <% }) %>
+            </p>
+            <div class="page-header text-center">
+                <a href="/" class="btn btn-default btn-sm">Home</a>
+                <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+                <a href="/admin" class="btn btn-default btn-sm">Back</a>
+            </div>
+
+                <h1><span class="fa fa-sign-in"></span>Update Details</h1>
+
+
+                <!-- UPDATE FORM -->
+                <form action="/admin/customerdetails/<%=customer._id%>" method="post">
+
+                    <div class="form-group">
+                        <label>Days Left</label>
+                        <input type="number" class="form-control" name="customer[daysLeft]" value="<%= customer.daysLeft %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Long Clothes</label>
+                        <input type="number" class="form-control" name="customer[longClothes]" value="<%= customer.longClothes %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Short Clothes</label>
+                        <input type="number" class="form-control" name="customer[shortClothes]" value="<%= customer.shortClothes %>">
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg">Enter</button>
+                    
+                </form>
+        </div>
+    </body>
+</html>
